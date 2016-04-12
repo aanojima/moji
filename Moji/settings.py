@@ -20,13 +20,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = 'h4mc2c4oap7yc)uj9qug-rjl!tum32464vk@np$f&=!@h&8u4m'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-import os
-
 DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -51,14 +49,16 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.contrib.admin',
-    'django.contrib.admindocs',
+#     'django.contrib.admin',
+#     'django.contrib.admindocs',
 )
 
 ROOT_URLCONF = 'Moji.urls'
 
 WSGI_APPLICATION = 'Moji.wsgi.application'
 
+# Honor the 'X-Forwarded-Proto' header for request.is_secure()
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
