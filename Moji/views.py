@@ -3,8 +3,11 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 
-def home(request):
-	return render(request, 'App/home.html', {})
+def splash(request):
+	return render(request, 'App/splash.html', {})
+
+def main(request):
+	return render(request, 'App/main.html', {})
 
 def login(request):
 	return HttpResponse("Login")

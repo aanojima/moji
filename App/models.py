@@ -23,7 +23,38 @@ class Character(models.Model):
 		self.save()
 	
 	template = models.ImageField(upload_to=key)
+	
+	# POSITION
+	center_of_gravity = 0
+
+	# SIZE / SHAPE
+	encircle_x_axis = 0
+	encircle_y_axis = 0
 	stroke_count = models.PositiveSmallIntegerField()
+	conjunction_points = 0
+
+
+class Stroke(models.Model):
+
+	def key(self, filename):
+		url = "character-stroke-templates/%s/%s" % (self.id, filename)
+		return url
+
+	character = models.ForeignKey('Character')
+	index = models.PositiveSmallIntegerField()
+	template = models.ImageField(upload_to=key)
+
+	# POSITION
+	center_of_gravity = 0
+
+	# SIZE / SHAPE
+	encircle_x_axis = 0
+	encircle_y_axis = 0
+	end_points = 0
+	conjunction_points = 0
+
+	# TODO
+	difference = 0
 
 
 class Exercise(models.Model):
