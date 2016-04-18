@@ -12,14 +12,33 @@
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
-	<link rel="stylesheet" href="{{STATIC_URL}}App/main.css"/>
+	<link rel="stylesheet" href="{{STATIC_URL}}App/css/main.css"/>
 </head>
 <body>
 	<div id="main-content" class="text-center">
-		<div id="navigation-bar"><h1>Moji</h1></div>
-		<div id="exercise-information">Exercise</div>
+		<div id="navigation-bar"><h1>MOJI</h1></div>
+		<div id="exercise-information">
+			<h2>Exercise</h2>
+			<div id="character-set">Character Set: <span id="character-set-value">Hiragana</span></div>
+			<div id="character">Character: <span id="character-value">'a'</span></div>
+		</div>
+		<br/>
 		<div id="drawing">
-			<canvas id="drawing-canvas" width="500" height="500" />
+			<div id="drawing-canvas-block">
+				<canvas id="drawing-canvas" width="500" height="500"></canvas>
+				<canvas id="feedback-canvas" width="500" height="500"></canvas>
+			</div>
+			<br/>
+			<div id="drawing-canvas-controls">
+				<button type="button" id="drawing-submit" class="btn btn-primary">Submit</button>
+				<button type="button" id="drawing-undo" class="btn btn-warning">Undo</button>
+				<button type="button" id="drawing-clear" class="btn btn-danger">Clear</button>
+				<button type="button" id="drawing-next" class="btn btn-success">Next</button>
+			</div>
+		</div>
+		<br/>
+		<div id="feedback">
+			No feedback at the moment
 		</div>
 	</div>
 </body>
