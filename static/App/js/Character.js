@@ -41,7 +41,69 @@ var Character = function(){
 	}
 
 	self.debug = function(){
+		for (var i in _strokes){
+			console.log(self.calculateStrokeCOG(i));
+		}
+		console.log(self.calculateCOG());
 		console.log(_strokes);
+	}
+
+	self.calculateCOG = function(){
+		var numPoints = 0;
+		var totalX = 0;
+		var totalY = 0;
+		for (var i in _strokes){
+			var stroke = _strokes[i];
+			numPoints += stroke.length;
+			for (var j in stroke){
+				var point = stroke[j];
+				totalX += point[0];
+				totalY += point[1];
+			}
+		}
+		return [totalX / numPoints, totalY / numPoints];
+	}
+
+	self.calculateStrokeCOG = function(strokeNumber){
+		var numPoints = 0;
+		var totalX = 0;
+		var totalY = 0;
+		var stroke = _strokes[strokeNumber];
+		numPoints = stroke.length;
+		for (var i in stroke){
+			var point = stroke[i];
+			totalX += point[0];
+			totalY += point[1];
+		}
+		return [totalX / numPoints, totalY / numPoints];
+	}
+
+	self.calculateDeviation = function(){
+		// TODO
+	}
+
+	self.calculateRange = function(){
+		// TODO
+	}
+
+	self.calculateStrokeDeviation = function(strokeNumber){
+		// TODO
+	}
+
+	self.calculateStrokeRange = function(strokeNumber){
+		// TODO
+	}
+
+	self.calculateMultipleStrokeIntersections = function(){
+		// TODO
+	}
+
+	self.caclulateSingleStrokeIntersections = function(){
+		// TODO
+	}
+
+	self.submit = function(){
+		// TODO
 	}
 
 	return self;
