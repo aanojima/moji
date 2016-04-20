@@ -13,6 +13,10 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
 	<link rel="stylesheet" href="{{STATIC_URL}}App/css/main.css"/>
+
+	<script type="text/javascript" src="{{STATIC_URL}}App/js/main.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}App/js/Character.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}App/js/DrawingPad.js"></script>
 </head>
 <body>
 	<div id="main-content" class="text-center">
@@ -25,8 +29,8 @@
 		<br/>
 		<div id="drawing">
 			<div id="drawing-canvas-block">
-				<canvas id="drawing-canvas" width="500" height="500"></canvas>
-				<canvas id="feedback-canvas" width="500" height="500"></canvas>
+				<canvas id="drawing-canvas" width="275" height="275"></canvas>
+				<canvas id="feedback-canvas" width="275" height="275"></canvas>
 			</div>
 			<br/>
 			<div id="drawing-canvas-controls">

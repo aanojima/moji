@@ -1,6 +1,6 @@
 #drawing-canvas-block {
-    width: 500px;
-    height: 500px;
+    width: 550px;
+    height: 550px;
     margin: auto;
     border: solid black 2px;
 }
@@ -12,5 +12,9 @@
     margin-left: auto;
     margin-right: auto;
     display: block;
-    width: 500px;
+    width: 550px;
+}
+
+#drawing-canvas {
+    z-index: 10;
 }
