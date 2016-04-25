@@ -7,6 +7,8 @@ var DrawingPad = function(){
 	var _character = Character();
 	var _lastStrokeData = [];
 
+	var debugToggle = false;
+
 	// TODO
 	$("#drawing-canvas").on("mousedown", function(e){
 		var x = e.offsetX / 2;
@@ -37,13 +39,23 @@ var DrawingPad = function(){
 
 	$("#drawing-undo").on("click", function(e){
 		undoStroke();
-		undoDraw();
+		resetDraw();
 	});
 
 	$("#drawing-clear").on("click", function(e){
 		_character.clear();
 		clear();
 	});
+
+	$("#drawing-debug").on("click", function(e){
+		debugToggle = !debugToggle;
+		if (debugToggle){
+			self.debug();
+		}
+		else {
+			resetDraw();
+		}
+	})
 
 	function beginDraw(x,y){
 		_context.beginPath();
@@ -84,7 +96,7 @@ var DrawingPad = function(){
 		var lastStroke = _character.removeLastStroke();
 	}
 
-	function undoDraw(){
+	function resetDraw(){
 		clear();
 		var strokes = _character.getStrokes();
 		for (var i in strokes){
