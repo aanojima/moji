@@ -9,7 +9,8 @@ from django.conf.urls.static import static
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'Moji.views.splash', name='splash'),
-    url(r'^main', 'Moji.views.main', name='main'),
+    url(r'^student', 'Moji.views.student', name='student'),
+    url(r'^teacher', 'Moji.views.teacher', name='teacher'),
     url(r'^api/', include('App.urls', namespace='App')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^login/^$', views.login),

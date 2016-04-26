@@ -39,7 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.admindocs',
     'App',
-    'south',
+    # 'south',
 )
 
 MIDDLEWARE_CLASSES = (

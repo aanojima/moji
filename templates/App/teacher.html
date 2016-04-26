@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Moji - Teacher Page</title>
+	<!-- JQUERY -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+
+	<!-- BOOTSTRAP -->
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<!-- Theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+	<link rel="stylesheet" href="{{STATIC_URL}}App/css/teacher.css"/>
+
+	<script type="text/javascript" src="{{STATIC_URL}}App/js/teacher.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}App/js/AVL.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}App/js/Character.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}App/js/DrawingPad.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}App/js/TeacherSubmitter.js"></script>
+</head>
+<body>
+	<div id="main-content" class="text-center">
+		<div id="navigation-bar"><h1>MOJI</h1></div>
+		<div id="exercise-information">
+			<h2>Exercise</h2>
+			<div id="character-set">Character Set: <span id="character-set-value">
+				<select id="character-set-select">
+					<option value="HG">Hiragana</option>
+					<option value="KK">Katakana</option>
+				</select>
+			</span></div>
+			<div id="character">Character: <span id="character-value">
+				<select id="character-select">
+					<option name="a" value="1">a</option>
+					<option name="i" value="2">i</option>
+					<option name="u" value="3">u</option>
+					<option name="e" value="4">e</option>
+					<option name="o" value="5">o</option>
+				</select>
+			</span></div>
+		</div>
+		<br/>
+		<div id="drawing">
+			<div id="drawing-canvas-block">
+				<canvas id="drawing-canvas" width="275" height="275"></canvas>
+			</div>
+			<br/>
+			<div id="drawing-canvas-controls">
+				<button type="button" id="drawing-submit" class="btn btn-primary">Submit</button>
+				<button type="button" id="drawing-undo" class="btn btn-warning">Undo</button>
+				<button type="button" id="drawing-clear" class="btn btn-danger">Clear</button>
+				<button type="button" id="drawing-debug" class="btn btn-default">Debug</button>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

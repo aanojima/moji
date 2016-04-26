@@ -160,7 +160,7 @@ function AVL(){
 		// if key is same as node's key, then this is the node
 		// TODO: what if same value???
 		else {
-			//
+			// node with only one child
 		}
 	}
 

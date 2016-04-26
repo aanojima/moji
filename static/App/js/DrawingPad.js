@@ -1,10 +1,11 @@
-var DrawingPad = function(){
+var DrawingPad = function(submitter){
 	var self = {};
 
 	var _isDrawing = false;
-	var _canvas = $("#drawing-canvas");
-	var _context = _canvas[0].getContext("2d");
+	var _canvas = $("#drawing-canvas")[0];
+	var _context = _canvas.getContext("2d");
 	var _character = Character();
+	window.character = _character;
 	var _lastStrokeData = [];
 
 	var debugToggle = false;
@@ -37,6 +38,10 @@ var DrawingPad = function(){
 		_isDrawing = false;
 	});
 
+	$("#drawing-submit").on("click", function(e){
+		submit();
+	});
+
 	$("#drawing-undo").on("click", function(e){
 		undoStroke();
 		resetDraw();
@@ -51,9 +56,11 @@ var DrawingPad = function(){
 		debugToggle = !debugToggle;
 		if (debugToggle){
 			self.debug();
+			$(this).text("Reset");
 		}
 		else {
 			resetDraw();
+			$(this).text("Debug");
 		}
 	})
 
@@ -89,7 +96,8 @@ var DrawingPad = function(){
 	}
 
 	function submit(){
-		// TODO
+		submitter.process(_character);
+		submitter.submit();
 	}
 
 	function undoStroke(){
@@ -167,10 +175,22 @@ var DrawingPad = function(){
 		var lineSegments = _character.sortLineSegments();
 		// console.log(lineSegments);
 
-		var intersections = _character.caclulateIntersections();
+		var intersections = _character.calculateIntersections();
 		console.log(intersections);
-		encirclePoints(intersections["single"], "green");
-		encirclePoints(intersections["multiple"], "orange");
+
+		var singleStrokeIntersections = [];
+		for (var i in intersections["single"]){
+			var intersection = intersections["single"][i];
+			singleStrokeIntersections.push(intersection["point"]);
+		}
+		encirclePoints(singleStrokeIntersections, "green");
+
+		var multipleStrokeIntersections = [];
+		for (var i in intersections["multiple"]){
+			var intersection = intersections["multiple"][i];
+			multipleStrokeIntersections.push(intersection["point"])
+		}
+		encirclePoints(multipleStrokeIntersections, "orange");
 
 		self.showCOG();
 		self.showStrokeCOGs();
@@ -228,6 +248,15 @@ var DrawingPad = function(){
 			_context.lineWidth = 2;
 			_context.stroke();
 		}
+	}
+
+	self.setPoints = function(points){
+		_character.setPoints(points)
+		resetDraw();
+	}
+
+	self.process = function(){
+		submitter.process(_character);
 	}
 
 	return self;

@@ -6,8 +6,11 @@ from django.conf import settings
 def splash(request):
 	return render(request, 'App/splash.html', {})
 
-def main(request):
-	return render(request, 'App/main.html', {})
+def student(request):
+	return render(request, 'App/student.html', {})
+
+def teacher(request):
+	return render(request, 'App/teacher.html', {})
 
 def login(request):
 	return HttpResponse("Login")

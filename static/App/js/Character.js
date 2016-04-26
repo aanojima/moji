@@ -90,8 +90,8 @@ var Character = function(){
 			var totalX = 0;
 			var totalY = 0;
 			numPoints = stroke.length;
-			for (var i in stroke){
-				var point = stroke[i];
+			for (var j in stroke){
+				var point = stroke[j];
 				totalX += point[0];
 				totalY += point[1];
 			}
@@ -231,8 +231,8 @@ var Character = function(){
 	function calculateLineSegmentIntersection(lineA, lineB){
 		var alx = lineA["left"][0];
 		var arx = lineA["right"][0];
-		var aly = lineA["left"][1]
-		var ary = lineA["right"][1]
+		var aly = lineA["left"][1];
+		var ary = lineA["right"][1];
 		var blx = lineB["left"][0];
 		var brx = lineB["right"][0];
 		var bly = lineB["left"][1];
@@ -251,8 +251,11 @@ var Character = function(){
 				// Collision detected
 				var ix = alx + (t * sax);
 				var iy = aly + (t * say);
-				var intersection = [ix, iy];
-				console.log(intersection);
+				var intersection = {
+					"point" : [ix, iy],
+					"strokeA" : lineA["stroke"],
+					"strokeB" : lineB["stroke"]
+				}
 				return intersection;
 			}
 		}
@@ -261,16 +264,18 @@ var Character = function(){
 				// Collision detected
 				var ix = alx + (t * sax);
 				var iy = aly + (t * say);
-				var intersection = [ix, iy];
-				console.log(intersection);
+				var intersection = {
+					"point" : [ix, iy],
+					"strokeA" : lineA["stroke"],
+					"strokeB" : lineB["stroke"]
+				};
 				return intersection;
 			}	
 		}
-
-		return undefined;
+		return undefined
 	}
 
-	self.caclulateIntersections = function(){
+	self.calculateIntersections = function(){
 		// TODO: Using AVL Tree and Line Sweep Method
 		var intersections = {
 			"multiple" : [],
@@ -284,19 +289,43 @@ var Character = function(){
 				var intersection = calculateLineSegmentIntersection(lineA, lineB);
 				if (intersection !== undefined){
 					if (lineA["stroke"] == lineB["stroke"]){
-						intersections["single"].push(intersection);
+						var lastIndex = intersections["single"].length - 1;
+						if (lastIndex == -1){
+							intersections["single"].push(intersection);
+							continue;
+						}
+						var lastIntersection = intersections["single"][lastIndex];
+						console.log(intersections, lastIndex);
+						var p0 = lastIntersection["point"];
+						var p1 = intersection["point"];
+						var d = Math.sqrt(Math.pow(p1[0]-p0[0],2)+Math.pow(p1[1]-p0[1],2));
+						if (d > 5){
+							intersections["single"].push(intersection);
+						}
 					}
 					else {
-						intersections["multiple"].push(intersection);
+						var lastIndex = intersections["multiple"].length - 1;
+						if (lastIndex == -1){
+							intersections["multiple"].push(intersection);
+							continue;
+						}
+						var lastIntersection = intersections["multiple"][lastIndex];
+						var p0 = lastIntersection["point"];
+						var p1 = intersection["point"];
+						var d = Math.sqrt(Math.pow(p1[0]-p0[0],2)+Math.pow(p1[1]-p0[1],2));
+						if (d > 5){
+							intersections["multiple"].push(intersection);
+						}
 					}
 				}
 			}
 		}
+
 		return intersections;
 	}
 
-	self.submit = function(){
-		// TODO
+	self.setPoints = function(points){
+		_strokes = points;
 	}
 
 	return self;

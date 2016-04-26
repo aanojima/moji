@@ -1,7 +1,11 @@
 from django.conf.urls import patterns, include, url
+import views, character_controller, stroke_controller
 
 urlpatterns = patterns('',
-	# url(r'^$', views.api),
+	url(r'^$', views.api),
+	url(r'^characters/(?P<character_id>\d+)', character_controller.character, name='character'),
+	url(r'^characters/$', character_controller.characters, name='characters'),
+
 	# url(r'^scenes/resources/(?P<scene_id>\d+)', sceneplayer_controller.scene_resources, name='scene_resources'),
 	# url(r'^scenes/placement/(?P<scene_id>\d+)', sceneplayer_controller.scene_placement, name='scene_placement'),
 	# url(r'^scenes/(?P<scene_id>\d+)/background/set', background_controller.add_scene_background, name='add_scene_background'),
