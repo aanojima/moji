@@ -82,6 +82,30 @@ var DrawingPad = function(submitter){
 	}
 
 	function stroke(x,y){
+		var lastIndex = _lastStrokeData.length - 1;
+		if (lastIndex > 0){
+			var lastPoint = _lastStrokeData[lastIndex];
+			if (lastPoint[0] == x && lastPoint[1] == y){
+				// Same point - ignore
+				return;
+			}
+		}
+		if (lastIndex > 1){
+			var lastPoint = _lastStrokeData[lastIndex];
+			var prevLastPoint = _lastStrokeData[lastIndex - 1];
+			var dy = y - lastPoint[1];
+			var dx = x - lastPoint[0];
+			var prevDY = lastPoint[1] - prevLastPoint[1];
+			var prevDX = lastPoint[0] - prevLastPoint[0];
+			if (dx == 0 && prevDX == 0){
+				// Same vertical slope - replace old point
+				_lastStrokeData.pop();
+			}
+			else if ((dy/dx) == (prevDY/prevDX)){
+				// Same slope - replace old point
+				_lastStrokeData.pop();
+			}
+		}
 		_lastStrokeData.push([x,y]);
 	}
 
@@ -253,10 +277,6 @@ var DrawingPad = function(submitter){
 	self.setPoints = function(points){
 		_character.setPoints(points)
 		resetDraw();
-	}
-
-	self.process = function(){
-		submitter.process(_character);
 	}
 
 	return self;

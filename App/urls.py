@@ -1,10 +1,11 @@
 from django.conf.urls import patterns, include, url
-import views, character_controller, stroke_controller
+import views, character_controller, grade_controller
 
 urlpatterns = patterns('',
 	url(r'^$', views.api),
 	url(r'^characters/(?P<character_id>\d+)', character_controller.character, name='character'),
 	url(r'^characters/$', character_controller.characters, name='characters'),
+	url(r'^exercise/submit$', grade_controller.student_submit, name='student_submit'),
 
 	# url(r'^scenes/resources/(?P<scene_id>\d+)', sceneplayer_controller.scene_resources, name='scene_resources'),
 	# url(r'^scenes/placement/(?P<scene_id>\d+)', sceneplayer_controller.scene_placement, name='scene_placement'),

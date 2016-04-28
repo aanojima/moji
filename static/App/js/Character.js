@@ -228,46 +228,50 @@ var Character = function(){
 		return strokeRanges;
 	}
 
+	// TODO: Update backend for all intersection methods
 	function calculateLineSegmentIntersection(lineA, lineB){
-		var alx = lineA["left"][0];
-		var arx = lineA["right"][0];
-		var aly = lineA["left"][1];
-		var ary = lineA["right"][1];
-		var blx = lineB["left"][0];
-		var brx = lineB["right"][0];
-		var bly = lineB["left"][1];
-		var bry = lineB["right"][1];
+		var p0_x = lineA["left"][0];
+		var p1_x = lineA["right"][0];
+		var p0_y = lineA["left"][1];
+		var p1_y = lineA["right"][1];
+		var p2_x = lineB["left"][0];
+		var p3_x = lineB["right"][0];
+		var p2_y = lineB["left"][1];
+		var p3_y = lineB["right"][1];
 
-		var sax = arx - alx;
-		var say = ary - aly;
-		var sbx = brx - blx;
-		var sby = bry - bly;
+		var s1_x = p1_x - p0_x;
+		var s1_y = p1_y - p0_y;
+		var s2_x = p3_x - p2_x;
+		var s2_y = p3_y - p2_y;
 
-		var s = (-1*say * (alx - brx) + sax * (aly - bry)) / (-1*sbx * say + sax * sby);
-		var t = (   sbx * (aly - bry) - sby * (alx - brx)) / (-1*sbx * say + sax * sby);
+		var s = (-1*s1_y * (p0_x - p2_x) + s1_x * (p0_y - p2_y)) / (-1*s2_x * s1_y + s1_x * s2_y);
+		var t = (   s2_x * (p0_y - p2_y) - s2_y * (p0_x - p2_x)) / (-1*s2_x * s1_y + s1_x * s2_y);
 
 		if (lineA["stroke"] == lineB["stroke"]){
-			if (s > 0 && s < 1 && t > 0 && t < 1){
-				// Collision detected
-				var ix = alx + (t * sax);
-				var iy = aly + (t * say);
+			var segA = parseInt(lineA["segment"]);
+			var segB = parseInt(lineB["segment"]);
+			if (s >= 0 && s <= 1 && t >= 0 && t <= 1 &&
+				Math.abs(segA - segB) > 1){
+				// Stroke Self-Collision detected
+				var ix = p0_x + (t * s1_x);
+				var iy = p0_y + (t * s1_y);
 				var intersection = {
 					"point" : [ix, iy],
-					"strokeA" : lineA["stroke"],
-					"strokeB" : lineB["stroke"]
+					"segmentA" : lineA,
+					"segmentB" : lineB
 				}
 				return intersection;
 			}
 		}
 		else {
 			if (s >= 0 && s <= 1 && t >= 0 && t <= 1){
-				// Collision detected
-				var ix = alx + (t * sax);
-				var iy = aly + (t * say);
+				// Stroke Inter-Collision detected
+				var ix = p0_x + (t * s1_x);
+				var iy = p0_y + (t * s1_y);
 				var intersection = {
 					"point" : [ix, iy],
-					"strokeA" : lineA["stroke"],
-					"strokeB" : lineB["stroke"]
+					"segmentA" : lineA,
+					"segmentB" : lineB
 				};
 				return intersection;
 			}	
@@ -295,7 +299,6 @@ var Character = function(){
 							continue;
 						}
 						var lastIntersection = intersections["single"][lastIndex];
-						console.log(intersections, lastIndex);
 						var p0 = lastIntersection["point"];
 						var p1 = intersection["point"];
 						var d = Math.sqrt(Math.pow(p1[0]-p0[0],2)+Math.pow(p1[1]-p0[1],2));
@@ -320,7 +323,7 @@ var Character = function(){
 				}
 			}
 		}
-
+		console.log(intersections);
 		return intersections;
 	}
 
