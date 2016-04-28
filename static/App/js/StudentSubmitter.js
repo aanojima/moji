@@ -50,7 +50,7 @@ var StudentSubmitter = function(){
 				console.log(result);
 			},
 			error : function(error){
-				console.log(error);
+				console.log(error.responseText);
 			}
 		})
 	}
