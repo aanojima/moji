@@ -44,7 +44,7 @@ var StudentSubmitter = function(){
 		// TODO: AJAX
 		$.ajax({
 			method : "POST",
-			url : "/api/exercise/submit",
+			url : window.MOJI_URL + "api/exercise/submit",
 			data : JSON.stringify(data),
 			success : function(result){
 				console.log(result);

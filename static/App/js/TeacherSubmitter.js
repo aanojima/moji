@@ -44,7 +44,7 @@ var TeacherSubmitter = function(){
 		// TODO: AJAX
 		$.ajax({
 			method : "PUT",
-			url : "/api/characters/" + data["character"]["character-id"],
+			url : window.MOJI_URL + "api/characters/" + data["character"]["character-id"],
 			data : JSON.stringify(data),
 			success : function(result){
 				console.log(result);

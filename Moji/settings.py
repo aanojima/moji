@@ -63,12 +63,30 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+if (os.environ.has_key('HOME') and os.environ['HOME'] == '/afs/athena.mit.edu/course/urop/moji'):
+    # MIT Athena Locker - Production
+    PRODUCTION = True
+    DATABASES = {
+        'default' : {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'moji+app',
+            'USER': 'moji',
+            'PASSWORD': 'mojidevpw',
+            'HOST': 'sql.mit.edu'
+        }
     }
-}
+    MOJI_URL = "/app/"
+else:
+    # Local Machine - Development
+    PRODUCTION = False
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
+    MOJI_URL = "/"
+    
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/

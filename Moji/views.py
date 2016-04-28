@@ -4,13 +4,13 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 
 def splash(request):
-	return render(request, 'App/splash.html', {})
+	return render(request, 'App/splash.html', { "MOJI_URL" : settings.MOJI_URL })
 
 def student(request):
-	return render(request, 'App/student.html', {})
+	return render(request, 'App/student.html', { "MOJI_URL" : settings.MOJI_URL })
 
 def teacher(request):
-	return render(request, 'App/teacher.html', {})
+	return render(request, 'App/teacher.html', { "MOJI_URL" : settings.MOJI_URL })
 
 def login(request):
 	return HttpResponse("Login")
