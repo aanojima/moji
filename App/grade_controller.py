@@ -17,11 +17,11 @@ def evaluate(expected_points, submitted_points):
 	# GRADING POLICY
 	#
 	# Character Grade: 40%
-	# - Stroke Count: 20% (all or nothing)
-	# - Dimension Ratio: 20%
+	# - Stroke Count: 20% (all or nothing) DONE
+	# - Dimension Ratio: 20% DONE
 	# - Number of Multiple Intersections: 20%
 	# - Relative Location of Multple Intersections: 20%
-	# - Relative Location of COG: 20%
+	# - Relative Location of COG: 20% DONE
 	#
 	# - If there are no intersections,
 	#    eliminate Relative Location of Multiple Intersections
@@ -42,47 +42,133 @@ def evaluate(expected_points, submitted_points):
 	#    and make everything valued at 15%
 	#    except for Stroke Shape (stays the same at 25%)
 
+	# TODO: PUT ALL SCORING WEIGHTS AS CONSTANTS AND PUT IN RESULT
+
 	result = {
 		"data" : {},
 		"character-grade" : 0.0,
-		"character-weight" : 0.4,
+		"character-grade-data" : {},
 		"strokes-grade" : 0.0,
-		"strokes-weight" : 0.6,
+		"strokes-grade-data" : {},
 		"feedback" : {}
 	}
+
 
 	# Stroke Count
 	expected_stroke_count = grader.get_stroke_count(expected_points)
 	submitted_stroke_count = grader.get_stroke_count(submitted_points)
+	result["feedback"]["stroke-count-difference"] = submitted_stroke_count - expected_stroke_count
 	if expected_stroke_count != submitted_stroke_count:
-		result["feedback"] = {
-			"stroke-count-difference" : submitted_stroke_count - expected_stroke_count
-		}
+		result["character-grade-data"]["stroke-count"] = 0
 		return result
 	else:
-		result["character-grade"] += 0.25
-	
-	# Overall Character COG
-	expected_COG = grader.calculate_COG(expected_points)
-	submitted_COG = grader.calculate_COG(submitted_points)
+		result["character-grade"] += 0.2
+		result["character-grade-data"]["stroke-count"] = 1
 
-	# Stroke COGs
-	expected_stroke_COGs = grader.calculate_stroke_COGs(expected_points)
-	submitted_stroke_COGs = grader.calculate_stroke_COGs(submitted_points)
 
-	# Character Range
+	# Character Range and Dimension Ratio
 	expected_range = grader.calculate_range(expected_points)
 	submitted_range = grader.calculate_range(submitted_points)
-
 	[expected_x_min, expected_y_min, expected_x_max, expected_y_max] = expected_range
 	[submitted_x_min, submitted_y_min, submitted_x_max, submitted_y_max] = submitted_range
-
 	expected_width = expected_x_max - expected_x_min
 	submitted_width = submitted_x_max - submitted_x_min
 	expected_height = expected_y_max - expected_y_min
 	submitted_height = submitted_y_max - submitted_y_min
 	expected_ratio = expected_width / float(expected_height)
 	submitted_ratio = submitted_width / float(submitted_height)
+	ratio_offset = (submitted_ratio / expected_ratio) - 1.0 # 0.5-2.0
+	if ratio_offset > -0.1 and ratio_offset < 0.20:
+		# Allowable
+		result["character-grade"] += 0.2
+		result["character-grade-data"]["character-dimension-ratio"] = 1
+		result["feedback"]["character-dimension-ratio"] = "Acceptable"
+	else:
+		if ratio_offset < -0.1:
+			# smaller ratio
+			ratio_score = 1 - ((min(-1*ratio_offset, 0.5) - 0.1) / 0.4)
+			result["feedback"]["character-dimension-ratio"] = "Long"
+		elif ratio_offset > 0.20:
+			# greater ratio
+			ratio_score = 1 - ((min(ratio_offset, 1.0) - 0.2) / 0.8)
+			result["feedback"]["character-dimension-ratio"] = "Wide"
+		else:
+			# unhandled???
+			ratio_score = -1
+		result["character-grade"] += ratio_score * 0.2
+		result["character-grade-data"]["character-dimension-ratio"] = ratio_score
+	
+
+	# Overall Character COG
+	# TODO: is this NECESSARY???
+	expected_COG = grader.calculate_COG(expected_points)
+	submitted_COG = grader.calculate_COG(submitted_points)
+	expected_COGx_relative = (expected_COG[0] - expected_x_min) / expected_width
+	expected_COGy_relative = (expected_COG[1] - expected_y_min) / expected_height
+	submitted_COGx_relative = (submitted_COG[0] - submitted_x_min) / submitted_width
+	submitted_COGy_relative = (submitted_COG[1] - submitted_y_min) / submitted_height
+	COGx_ratio_offset = (submitted_COGx_relative / expected_COGx_relative) - 1
+	COGy_ratio_offset = (submitted_COGy_relative / expected_COGy_relative) - 1
+	if COGx_ratio_offset > -0.1 and COGx_ratio_offset < 0.20:
+		# Allowable
+		result["character-grade"] += 0.1
+		result["character-grade-data"]["character-COG-x"] = 1
+		result["feedback"]["character-COG-x"] = "Acceptable"
+	else:
+		if COGx_ratio_offset < -0.1:
+			# too far left
+			COGx_ratio_score = 1 - ((min(-1*COGx_ratio_offset, 0.5) - 0.1) / 0.4)
+			result["feedback"]["character-COG-x"] = "Left"
+		elif COGx_ratio_offset > 0.20:
+			# too far right
+			COGx_ratio_score = 1 - ((min(COGx_ratio_offset, 1.0) - 0.2) / 0.8)
+			result["feedback"]["character-COG-x"] = "Right"
+		else:
+			# unhandled???
+			COGx_ratio_score = -1
+		result["character-grade"] += COGx_ratio_score * 0.1
+		result["character-grade-data"]["character-COG-x"] = COGx_ratio_score
+	if COGy_ratio_offset > -0.1 and COGy_ratio_offset < 0.20:
+		# Allowable
+		result["character-grade"] += 0.1
+		result["character-grade-data"]["character-COG-y"] = 1
+		result["feedback"]["character-COG-y"] = "Acceptable"
+	else:
+		if COGy_ratio_offset < -0.1:
+			# too far left
+			COGy_ratio_score = 1 - ((min(-1*COGy_ratio_offset, 0.5) - 0.1) / 0.4)
+			result["feedback"]["character-COG-y"] = "Low"
+		elif COGy_ratio_offset > 0.20:
+			# too far right
+			COGy_ratio_score = 1 - ((min(COGy_ratio_offset, 1.0) - 0.2) / 0.8)
+			result["feedback"]["character-COG-y"] = "High"
+		else:
+			# unhandled???
+			COGy_ratio_score = -1
+		result["character-grade"] += COGy_ratio_score * 0.1
+		result["character-grade-data"]["character-COG-y"] = COGy_ratio_score
+
+	# Multiple-Stroke Intersections (and Relative Location)
+	expected_intersections = grader.calculate_intersections(expected_points)
+	submitted_intersections = grader.calculate_intersections(submitted_points)
+	num_expected_multi_intersections = len(expected_intersections["multiple"])
+	num_submitted_multi_intersections = len(submitted_intersections["multiple"])
+	result["feedback"]["multi-intersections-difference"] = num_submitted_multi_intersections - num_expected_multi_intersections
+	if num_expected_multi_intersections == num_submitted_multi_intersections:
+		# matching
+		result["character-grade"] += 0.2
+		result["character-grade-data"]["multi-intersections"] = 1
+		# TODO: intersection locations
+	else:
+		result["character-grade-data"]["multi-intersections"] = 0
+		result["character-grade-data"]["multi-intersection-positioning"] = 0
+		
+
+	# Stroke COGs
+	expected_stroke_COGs = grader.calculate_stroke_COGs(expected_points)
+	submitted_stroke_COGs = grader.calculate_stroke_COGs(submitted_points)
+
+	
 
 	# Stroke Ranges
 	expected_stroke_ranges = grader.calculate_stroke_ranges(expected_points)
@@ -91,6 +177,7 @@ def evaluate(expected_points, submitted_points):
 		# TODO
 		continue
 
+	# DEBUGGING PURPOSES
 	result["data"] = {
 		"expected_ratio" : expected_ratio,
 		"submitted_ratio" : submitted_ratio
