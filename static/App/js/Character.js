@@ -41,9 +41,9 @@ var Character = function(){
 	}
 
 	self.debug = function(){
-		console.log(self.calculateStrokeCOGs());
-		console.log(self.calculateCOG());
-		console.log(_strokes);
+		//console.log(self.calculateStrokeCOGs());
+		//console.log(self.calculateCOG());
+		//console.log(_strokes);
 	}
 
 	self.getEndpoints = function(){
@@ -323,7 +323,7 @@ var Character = function(){
 				}
 			}
 		}
-		console.log(intersections);
+		// console.log(intersections);
 		return intersections;
 	}
 

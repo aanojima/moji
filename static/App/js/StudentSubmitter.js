@@ -37,7 +37,7 @@ var StudentSubmitter = function(){
 		processStrokes(character);
 		// processIntersections(character);
 		// processDerivatives(character);
-		console.log(data);
+		// console.log(data);
 	}
 
 	self.submit = function(){
@@ -57,7 +57,7 @@ var StudentSubmitter = function(){
 
 	self.debug = function(){
 		self.process();
-		console.log(data);
+		// console.log(data);
 	}
 
 	return self;

@@ -19,23 +19,23 @@ def evaluate(expected_points, submitted_points):
 	# Character Grade: 40%
 	# - Stroke Count: 20% (all or nothing) DONE
 	# - Dimension Ratio: 20% DONE
-	# - Number of Multiple Intersections: 20%
-	# - Relative Location of Multple Intersections: 20%
-	# - Relative Location of COG: 20% DONE
+	# - Number of Multiple Intersections: 20% DONE
+	# - Relative Location of Multple Intersections: 20% (wrt two stroke ranges -> TODO)
+	# - Relative Location of COG: 20% DONE (wrt character range) (NECESSARY???)
 	#
 	# - If there are no intersections,
 	#    eliminate Relative Location of Multiple Intersections
-	#    and make everything valued at 25%
+	#    and make everything valued at 25% (TODO)
 	#
 	#
 	# Strokes Grade: 60% (Following Grades per Stroke)
-	# - Dimension Ratio: 12.5%
-	# - Number of Self Intersections: 12.5%
-	# - Relative Location of Self Intersections: 12.5%
-	# - Relative Location of Stroke Range: 12.5%
-	# - Relative Location of Endpoints: 12.5%
-	# - Relative Location of Stroke COG: 12.5%
-	# - Stroke Shape (Using Derivatives): 25%
+	# - Dimension Ratio: 12.5% (TODO)
+	# - Number of Self Intersections: 12.5% (TODO)
+	# - Relative Location of Self Intersections: 12.5% (wrt stroke range) (TODO)
+	# - Relative Location of Stroke Range: 12.5% (wrt character range) (TODO)
+	# - Relative Location of Endpoints: 12.5% (wrt stroke range) (TODO)
+	# - Relative Location of Stroke COG: 12.5% ??? (wrt stroke range) (TODO)
+	# - Stroke Shape (Using Derivatives): 25% TODO: Difficult
 	# 
 	# - If there are no intersections,
 	#    eliminate Relative Location of Self Intersections
@@ -158,7 +158,63 @@ def evaluate(expected_points, submitted_points):
 		# matching
 		result["character-grade"] += 0.2
 		result["character-grade-data"]["multi-intersections"] = 1
-		# TODO: intersection locations
+		# intersection locations
+		n_mi = len(expected_intersections["multiple"])
+		result["feedback"]["character-multiple-intersection-position-x"] = []
+		result["feedback"]["character-multiple-intersection-position-y"] = []
+		result["character-grade-data"]["character-multiple-intersection-position-x"] = []
+		result["character-grade-data"]["character-multiple-intersection-position-y"] = []
+		for i in range(n_mi):
+			# TODO: Should offset be relative to intersecting characters??? YES
+			e_m_intersection = expected_intersections["multiple"][i]
+			s_m_intersection = submitted_intersections["multiple"][i]
+			[emix, emiy] = e_m_intersection["point"]
+			[smix, smiy] = s_m_intersection["point"]
+			emix_ratio = (emix - expected_x_min) / expected_width
+			emiy_ratio = (emiy - expected_y_min) / expected_height
+			smix_ratio = (smix - submitted_x_min) / submitted_width
+			smiy_ratio = (smiy - submitted_y_min) / submitted_height
+			mix_ratio_offset = (smix_ratio / emix_ratio) - 1
+			miy_ratio_offset = (smiy_ratio / emiy_ratio) - 1
+			if mix_ratio_offset > -0.1 and mix_ratio_offset < 0.20:
+				# Allowable
+				mix_ratio_score = 1
+				result["feedback"]["character-multiple-intersection-position-x"].append("Acceptable")
+			else:
+				if mix_ratio_offset < -0.1:
+					# smaller ratio
+					mix_ratio_score = 1 - ((min(-1*mix_ratio_offset, 0.5) - 0.1) / 0.4)
+					result["feedback"]["character-multiple-intersection-position-x"].append("Left")
+				elif mix_ratio_offset > 0.20:
+					# greater ratio
+					mix_ratio_score = 1 - ((min(mix_ratio_offset, 1.0) - 0.2) / 0.8)
+					result["feedback"]["character-multiple-intersection-position-x"].append("Right")
+				else:
+					# unhandled???
+					mix_ratio_score = -1
+			result["character-grade"] += mix_ratio_score * (0.1 / n_mi)
+			result["character-grade-data"]["character-multiple-intersection-position-x"].append(mix_ratio_score)
+
+			# TODO: Should offset be relative to intersecting characters???
+			if miy_ratio_offset > -0.1 and miy_ratio_offset < 0.20:
+				# Allowable
+				miy_ratio_score = 1
+				result["feedback"]["character-multiple-intersection-position-y"].append("Acceptable")
+			else:
+				if miy_ratio_offset < -0.1:
+					# smaller ratio
+					miy_ratio_score = 1 - ((min(-1*miy_ratio_offset, 0.5) - 0.1) / 0.4)
+					result["feedback"]["character-multiple-intersection-position-y"].append("Left")
+				elif mix_ratio_offset > 0.20:
+					# greater ratio
+					mix_ratio_score = 1 - ((min(mix_ratio_offset, 1.0) - 0.2) / 0.8)
+					result["feedback"]["character-multiple-intersection-position-y"].append("Right")
+				else:
+					# unhandled???
+					miy_ratio_score = -1
+			result["character-grade"] += miy_ratio_score * (0.1 / n_mi)
+			result["character-grade-data"]["character-multiple-intersection-position-y"].append(miy_ratio_score)
+			
 	else:
 		result["character-grade-data"]["multi-intersections"] = 0
 		result["character-grade-data"]["multi-intersection-positioning"] = 0
@@ -167,7 +223,6 @@ def evaluate(expected_points, submitted_points):
 	# Stroke COGs
 	expected_stroke_COGs = grader.calculate_stroke_COGs(expected_points)
 	submitted_stroke_COGs = grader.calculate_stroke_COGs(submitted_points)
-
 	
 
 	# Stroke Ranges

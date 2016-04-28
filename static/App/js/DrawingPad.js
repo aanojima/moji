@@ -200,7 +200,7 @@ var DrawingPad = function(submitter){
 		// console.log(lineSegments);
 
 		var intersections = _character.calculateIntersections();
-		console.log(intersections);
+		// console.log(intersections);
 
 		var singleStrokeIntersections = [];
 		for (var i in intersections["single"]){
@@ -222,7 +222,7 @@ var DrawingPad = function(submitter){
 		var range = _character.calculateRange();
 		boxRectangle(range, "brown");
 		var strokeRanges = _character.calculateStrokeRanges();
-		console.log(range, strokeRanges);
+		// console.log(range, strokeRanges);
 		for (var i in strokeRanges){
 			boxRectangle(strokeRanges[i], "brown");
 		}
