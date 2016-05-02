@@ -47,7 +47,7 @@ var StudentSubmitter = function(){
 			url : window.MOJI_URL + "api/exercise/submit",
 			data : JSON.stringify(data),
 			success : function(result){
-				console.log(result);
+				console.log(result.results);
 			},
 			error : function(error){
 				console.log(error.responseText);
