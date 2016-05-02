@@ -3,6 +3,7 @@ from django.http import *
 from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
 from django.conf import settings
+from decimal import Decimal
 import json, os, time
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -372,6 +373,8 @@ def evaluate(expected_points, submitted_points):
 		[[sspx, sspy], [sepx, sepy]] = submitted_endpoints[i]
 		MAX_TOLERANCE = 0.5
 		MIN_TOLERANCE = 0.1
+		expected_stroke_derivatives = expected_derivatives[i]
+		submitted_stroke_derivatives = submitted_derivatives[i]
 
 		# STROKES Width and Height
 		expected_stroke_range = expected_stroke_ranges[i]
@@ -383,10 +386,16 @@ def evaluate(expected_points, submitted_points):
 		eheight = (eymax - eymin) / float(expected_height)
 		sheight = (symax - symin) / float(submitted_height)
 		width_ratio = swidth - ewidth
-		grade_stroke_by_ratio(width_ratio, DIFFERENCE_PARAMS,
+		stroke_dimension_params = {
+			"small-allowance" : -0.15,
+			"small-limit" : -0.5,
+			"large-allowance" : 0.15,
+			"large-limit" : 0.5
+		}
+		grade_stroke_by_ratio(width_ratio, stroke_dimension_params,
 			result, STROKE_WIDTH, "Narrow", "Wide")
 		height_ratio = sheight - eheight
-		grade_stroke_by_ratio(height_ratio, DIFFERENCE_PARAMS,
+		grade_stroke_by_ratio(height_ratio, stroke_dimension_params,
 			result, STROKE_HEIGHT, "Short", "Long")
 		
 		# STROKES Range Location (X,Y)
@@ -483,7 +492,32 @@ def evaluate(expected_points, submitted_points):
 		# STROKES Shape - TODO
 		n_expected_stroke_points = len(expected_stroke)
 		n_submitted_stroke_points = len(submitted_stroke)
-		print n_expected_stroke_points, n_submitted_stroke_points
+		steps = max(n_expected_stroke_points, n_submitted_stroke_points)
+		if steps == n_expected_stroke_points:
+			expected_step = 1
+			submitted_step = float(n_submitted_stroke_points - 1) / float(n_expected_stroke_points - 1)
+		else:
+			expected_step = float(n_expected_stroke_points - 1) / float(n_submitted_stroke_points - 1)
+			submitted_step = 1
+
+		expected_cursor = 0
+		submitted_cursor = 0
+		
+		for i in range(steps):
+			expected_step_index = int(expected_cursor)
+			expected_step_mod = expected_cursor % 1.0
+			submitted_step_index = int(submitted_cursor)
+			submitted_step_mod = submitted_cursor % 1.0
+			expected_point = grader.get_continuous_point(expected_stroke, expected_step_index, expected_step_mod)
+			submitted_point = grader.get_continuous_point(submitted_stroke, submitted_step_index, submitted_step_mod)
+			expected_derivative = grader.get_continuous_derivative(expected_stroke, expected_stroke_derivatives, expected_step_index, expected_step_mod)
+			submitted_derivative = grader.get_continuous_derivative(submitted_stroke, submitted_stroke_derivatives, submitted_step_index, submitted_step_mod)
+
+			# TODO
+			print expected_derivative, submitted_derivative
+
+			expected_cursor += expected_step
+			submitted_cursor += submitted_step
 
 	return result
 

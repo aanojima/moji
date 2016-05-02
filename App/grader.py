@@ -68,14 +68,36 @@ def calculate_derivatives(points):
 				next_point = stroke[j+1]
 				dx = 0.5 * (next_point[0] - prev_point[0])
 				dy = 0.5 * (next_point[1] - prev_point[1])
-			if dx == 0:
-				dx = 0.001
-			if dy == 0:
-				dy = 0.001
 			point_derivative = [dx, dy]
 			stroke_derivatives.append(point_derivative)
 		derivatives.append(stroke_derivatives)
 	return derivatives
+
+def get_continuous_point(points, index, mod):
+	mod = round(mod,3)
+	if mod == 0:
+		# Exact point
+		return points[int(index)]
+	if mod == 1:
+		# Check in case rounded up
+		return points[int(index + 1)]
+	[ax, ay] = points[int(index)]
+	[bx, by] = points[int(index) + 1]
+	dx = mod * (bx - ax)
+	dy = mod * (by - ay)
+	return [ax+dx, ay+dy]
+
+def get_continuous_derivative(points, derivatives, index, mod):
+	mod = round(mod,3)
+	if mod == 0:
+		# Exact point
+		return derivatives[int(index)]
+	if mod == 1:
+		# Check in case rounded up
+		return derivatives[int(index + 1)]
+	[ax, ay] = points[int(index)]
+	[bx, by] = points[int(index) + 1]
+	return [bx - ax, by - ay]
 
 def get_line_segments(points):
 	line_segments = []
