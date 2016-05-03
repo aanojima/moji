@@ -289,6 +289,7 @@ var DrawingPad = function(submitter){
 	self.setBackgroundImage = function(imageURL){
 		var feedbackCanvas = $("#feedback-canvas")[0];
 		var context = feedbackCanvas.getContext("2d");
+		context.clearRect(0, 0, feedbackCanvas.width, feedbackCanvas.height)
 		var imageObj = new Image();
 		imageObj.onload = function(){
 			context.drawImage(this, 0, 0, feedbackCanvas.width, feedbackCanvas.height);
