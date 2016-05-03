@@ -11,23 +11,23 @@ var DrawingPad = function(submitter){
 	var debugToggle = false;
 
 	// TODO
-	$("#drawing-canvas").on("mousedown", function(e){
+	function interactStart(e){
 		var x = e.offsetX / 2;
 		var y = e.offsetY / 2;
 		beginStroke(x,y);
 		beginDraw(x,y);
-	});
+	}
 
-	$("#drawing-canvas").on("mousemove", function(e){
+	function interactContinue(e){
 		if (_isDrawing){
 			var x = e.offsetX / 2;
 			var y = e.offsetY / 2;
 			stroke(x,y);
 			draw(x,y);
 		}
-	});
+	}
 
-	$(document).on("mouseup", function(e){
+	function interactEnd(e){
 		if (_isDrawing){
 			// STROKE COMPLETED
 			var x = e.offsetX / 2;
@@ -36,7 +36,15 @@ var DrawingPad = function(submitter){
 			endDraw(x,y);
 		}
 		_isDrawing = false;
-	});
+	}
+
+	$("#drawing-canvas").on("mousedown", interactStart);
+	$("#drawing-canvas").on("mousemove", interactContinue);
+	$(document).on("mouseup", interactEnd);
+
+	$("#drawing-canvas").on("touchstart", interactStart);
+	$("#drawing-canvas").on("touchmove", interactContinue);
+	$(document).on("touchend", interactEnd);
 
 	$("#drawing-submit").on("click", function(e){
 		submit();
