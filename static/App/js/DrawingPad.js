@@ -62,7 +62,7 @@ var DrawingPad = function(submitter){
 			resetDraw();
 			$(this).text("Debug");
 		}
-	})
+	});
 
 	function beginDraw(x,y){
 		_context.beginPath();
@@ -277,6 +277,17 @@ var DrawingPad = function(submitter){
 	self.setPoints = function(points){
 		_character.setPoints(points)
 		resetDraw();
+	}
+
+	self.setBackgroundImage = function(imageURL){
+		var feedbackCanvas = $("#feedback-canvas")[0];
+		var context = feedbackCanvas.getContext("2d");
+		var imageObj = new Image();
+		imageObj.onload = function(){
+			context.drawImage(this, 0, 0, feedbackCanvas.width, feedbackCanvas.height);
+		};
+
+		imageObj.src = imageURL;
 	}
 
 	return self;

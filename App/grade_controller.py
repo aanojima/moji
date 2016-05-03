@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
 from django.conf import settings
 from decimal import Decimal
-import json, os, time
+import json, os, time, math
 
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -98,7 +98,25 @@ def grade_stroke_by_ratio(value, params, result, label, small_feedback, large_fe
 		result["strokes-feedback"][label].append(feedback)
 	else:
 		result["strokes-feedback"][label] = feedback
-	
+
+def score(grades, weights):
+	total = 0
+	weight = 0
+	for key in grades:
+		if type(grades[key]) == type([]):
+			num = len(grades[key])
+			if num == 0:
+				continue
+			subgrade = 0
+			for grade in grades[key]:
+				subgrade += grade
+			subgrade /= float(num)
+			weight += weights[key]
+			total += subgrade * weights[key]
+		else:
+			weight += weights[key]
+			total += grades[key] *  weights[key]
+	return total / float(weight)
 
 def evaluate(expected_points, submitted_points):
 	# Return grade/feedback by comparing certain statistics
@@ -123,8 +141,8 @@ def evaluate(expected_points, submitted_points):
 
 	# TODO: PUT ALL SCORING WEIGHTS AS CONSTANTS AND PUT IN RESULT
 	GRADE_WEIGHTS = {
-		"character" : 0.40,
-		"strokes" : 0.60
+		"character" : 0.20,
+		"strokes" : 0.80
 	}
 
 	CHARACTER_DIMENSION_RATIO = "character-dimension-ratio"
@@ -154,6 +172,14 @@ def evaluate(expected_points, submitted_points):
 		CHARACTER_CROSS_INTERSECTIONS_Y : []
 	}
 
+	for key in CHARACTER_GRADE_DATA:
+		if type(CHARACTER_GRADE_DATA[key]) == type([]):
+			# sum
+			continue
+		else:
+			# Weight * Grade
+			continue
+
 	STROKE_WIDTH = "stroke-width"
 	STROKE_HEIGHT = "stroke-height"
 	STROKE_SELF_INTERSECTIONS = "stroke-self-intersections"
@@ -178,7 +204,7 @@ def evaluate(expected_points, submitted_points):
 		STROKE_STARTPOINT_LOCATION_Y : 0.025,
 		STROKE_ENDPOINT_LOCATION_X : 0.025,
 		STROKE_ENDPOINT_LOCATION_Y : 0.025,
-		STROKE_SHAPE : 0.3
+		STROKE_SHAPE : 0.5
 	}
 	STROKE_GRADE_DATA = {
 		STROKE_WIDTH : [],
@@ -224,7 +250,7 @@ def evaluate(expected_points, submitted_points):
 	}
 
 	result = {
-		"data" : {},
+		# "data" : {},
 		"overall-grade" : 0.0,
 		"character-grade" : 0.0,
 		# "character-grade-weights" : CHARACTER_GRADE_WEIGHTS,
@@ -256,6 +282,8 @@ def evaluate(expected_points, submitted_points):
 	submitted_intersections = grader.calculate_intersections(submitted_points)
 	expected_derivatives = grader.calculate_derivatives(expected_points)
 	submitted_derivatives = grader.calculate_derivatives(submitted_points)
+	STROKE_SHAPE_SCORE_TOLERANCE = 0.85
+	STROKE_SHAPE_SCORE_LIMIT = 0.5
 
 	# CHARACTER Stroke Count
 	result["character-feedback"][CHARACTER_STROKE_COUNT] = submitted_stroke_count - expected_stroke_count
@@ -369,6 +397,14 @@ def evaluate(expected_points, submitted_points):
 		# STROKES Expected and Submitted Data
 		expected_stroke = expected_points[i]
 		submitted_stroke = submitted_points[i]
+		expected_stroke_range = expected_stroke_ranges[i]
+		submitted_stroke_range = submitted_stroke_ranges[i]
+		[exmin, eymin, exmax, eymax] = expected_stroke_range
+		[sxmin, symin, sxmax, symax] = submitted_stroke_range
+		es_width = exmax - exmin
+		es_height = eymax - eymin
+		ss_width = sxmax - sxmin
+		ss_height = symax - symin
 		[[espx, espy], [eepx, eepy]] = expected_endpoints[i]
 		[[sspx, sspy], [sepx, sepy]] = submitted_endpoints[i]
 		MAX_TOLERANCE = 0.5
@@ -377,10 +413,6 @@ def evaluate(expected_points, submitted_points):
 		submitted_stroke_derivatives = submitted_derivatives[i]
 
 		# STROKES Width and Height
-		expected_stroke_range = expected_stroke_ranges[i]
-		submitted_stroke_range = submitted_stroke_ranges[i]
-		[exmin, eymin, exmax, eymax] = expected_stroke_range
-		[sxmin, symin, sxmax, symax] = submitted_stroke_range
 		ewidth = (exmax - exmin) / float(expected_width)
 		swidth = (sxmax - sxmin) / float(submitted_width)
 		eheight = (eymax - eymin) / float(expected_height)
@@ -503,22 +535,55 @@ def evaluate(expected_points, submitted_points):
 		expected_cursor = 0
 		submitted_cursor = 0
 		
-		for i in range(steps):
+		wrong_count = 0
+		wrong_count = 0
+		# print es_width, es_height, ss_width, ss_height
+		for j in range(steps):
 			expected_step_index = int(expected_cursor)
 			expected_step_mod = expected_cursor % 1.0
 			submitted_step_index = int(submitted_cursor)
 			submitted_step_mod = submitted_cursor % 1.0
-			expected_point = grader.get_continuous_point(expected_stroke, expected_step_index, expected_step_mod)
-			submitted_point = grader.get_continuous_point(submitted_stroke, submitted_step_index, submitted_step_mod)
-			expected_derivative = grader.get_continuous_derivative(expected_stroke, expected_stroke_derivatives, expected_step_index, expected_step_mod)
-			submitted_derivative = grader.get_continuous_derivative(submitted_stroke, submitted_stroke_derivatives, submitted_step_index, submitted_step_mod)
-
-			# TODO
-			print expected_derivative, submitted_derivative
-
+			# [ex, ey] = grader.get_continuous_point(expected_stroke, expected_step_index, expected_step_mod)
+			# [sx, sy] = grader.get_continuous_point(submitted_stroke, submitted_step_index, submitted_step_mod)
+			[edx, edy] = grader.get_continuous_derivative(expected_stroke, expected_stroke_derivatives, expected_step_index, expected_step_mod)
+			[sdx, sdy] = grader.get_continuous_derivative(submitted_stroke, submitted_stroke_derivatives, submitted_step_index, submitted_step_mod)
+			# a = (ex - expected_x_min) / expected_width
+			# b = (ey - expected_y_min) / expected_height
+			# c = (sx - submitted_x_min) / submitted_width
+			# d = (sy - submitted_y_min) / submitted_height
+			# a = (ex - exmin) / es_width
+			# b = (ey - eymin) / es_height
+			# c = (sx - sxmin) / ss_width
+			# d = (sy - symin) / ss_height
+			# xval = c - a
+			# yval = d - b
+			# is_bad_point = (abs(xval) > 0.25) and (abs(yval) > 0.25) or abs(xval) > 0.5 or abs(yval) > 0.5
+			e_angle = math.atan2(edx, edy)
+			s_angle = math.atan2(sdx, sdy)
+			angle_diff = (abs(e_angle - s_angle) % (2*math.pi) / (2*math.pi))
+			is_bad_orientation = angle_diff > 0.125
+			if is_bad_orientation:
+				wrong_count += 1
 			expected_cursor += expected_step
 			submitted_cursor += submitted_step
+		raw_stroke_shape_score = 1 - wrong_count / float(steps)
+		stroke_shape_score = (min(raw_stroke_shape_score, STROKE_SHAPE_SCORE_TOLERANCE) - STROKE_SHAPE_SCORE_LIMIT) / (STROKE_SHAPE_SCORE_TOLERANCE - STROKE_SHAPE_SCORE_LIMIT)
+		stroke_shape_score = max(stroke_shape_score,0)
+		result["strokes-grade-data"][STROKE_SHAPE].append(stroke_shape_score)
+		if stroke_shape_score == 1.0:
+			# Acceptable
+			shape_feedback = "Acceptable"
+		else:
+			# Irregular
+			shape_feedback = "Irregular"
+		result["strokes-feedback"][STROKE_SHAPE].append(shape_feedback)
 
+	character_score = score(CHARACTER_GRADE_DATA, CHARACTER_GRADE_WEIGHTS)
+	strokes_score = score(STROKE_GRADE_DATA, STROKE_GRADE_WEIGHTS)
+	overall_score = character_score * GRADE_WEIGHTS["character"] + strokes_score * GRADE_WEIGHTS["strokes"]
+	result["character-grade"] = character_score
+	result["strokes-grade"] = strokes_score
+	result["overall-grade"] = overall_score
 	return result
 
 
