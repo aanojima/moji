@@ -1,4 +1,4 @@
-var StudentSubmitter = function(){
+var StudentSubmitter = function(feedbackManager){
 	var self = {};
 	var data = {
 		"character" : {},
@@ -47,7 +47,7 @@ var StudentSubmitter = function(){
 			url : window.MOJI_URL + "api/exercise/submit",
 			data : JSON.stringify(data),
 			success : function(result){
-				console.log(result.results);
+				feedbackManager.displayFeedback(result.results);
 			},
 			error : function(error){
 				console.log(error.responseText);

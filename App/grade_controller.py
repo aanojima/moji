@@ -141,8 +141,8 @@ def evaluate(expected_points, submitted_points):
 
 	# TODO: PUT ALL SCORING WEIGHTS AS CONSTANTS AND PUT IN RESULT
 	GRADE_WEIGHTS = {
-		"character" : 0.20,
-		"strokes" : 0.80
+		"character" : 0.30,
+		"strokes" : 0.70
 	}
 
 	CHARACTER_DIMENSION_RATIO = "character-dimension-ratio"
@@ -151,9 +151,9 @@ def evaluate(expected_points, submitted_points):
 	CHARACTER_CROSS_INTERSECTIONS_X = "character-cross-intersections-x"
 	CHARACTER_CROSS_INTERSECTIONS_Y = "character-cross-intersections-y"
 	CHARACTER_GRADE_WEIGHTS = {
-		CHARACTER_DIMENSION_RATIO : 0.4,
+		CHARACTER_DIMENSION_RATIO : 0.3,
 		CHARACTER_STROKE_COUNT : 0.2,
-		CHARACTER_CROSS_INTERSECTIONS : 0.2,
+		CHARACTER_CROSS_INTERSECTIONS : 0.3,
 		CHARACTER_CROSS_INTERSECTIONS_X : 0.1,
 		CHARACTER_CROSS_INTERSECTIONS_Y : 0.1
 	}
@@ -363,6 +363,7 @@ def evaluate(expected_points, submitted_points):
 	# STROKES Self-Intersections
 	num_expected_self_intersections = len(expected_intersections["single"])
 	num_submitted_self_intersections = len(submitted_intersections["single"])
+	print num_expected_self_intersections, num_submitted_self_intersections
 	result["strokes-feedback"][STROKE_SELF_INTERSECTIONS] = num_submitted_self_intersections - num_expected_self_intersections
 	if num_expected_self_intersections == num_submitted_self_intersections:
 		result["strokes-grade-data"][STROKE_SELF_INTERSECTIONS] = 1
@@ -561,7 +562,7 @@ def evaluate(expected_points, submitted_points):
 			e_angle = math.atan2(edx, edy)
 			s_angle = math.atan2(sdx, sdy)
 			angle_diff = (abs(e_angle - s_angle) % (2*math.pi) / (2*math.pi))
-			is_bad_orientation = angle_diff > 0.125
+			is_bad_orientation = angle_diff > 0.2
 			if is_bad_orientation:
 				wrong_count += 1
 			expected_cursor += expected_step

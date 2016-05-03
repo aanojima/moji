@@ -10,7 +10,6 @@ var DrawingPad = function(submitter){
 
 	var debugToggle = false;
 
-	// TODO
 	function interactStart(e){
 		var x = e.offsetX / 2;
 		var y = e.offsetY / 2;
@@ -38,13 +37,13 @@ var DrawingPad = function(submitter){
 		_isDrawing = false;
 	}
 
-	$("#drawing-canvas").on("mousedown", interactStart);
-	$("#drawing-canvas").on("mousemove", interactContinue);
-	$(document).on("mouseup", interactEnd);
+	$("#drawing-canvas").bind("mousedown touchstart", interactStart);
+	$("#drawing-canvas").on("mousemove touchmove", interactContinue);
+	$(document).on("mouseup touchend", interactEnd);
 
-	$("#drawing-canvas").on("touchstart", interactStart);
-	$("#drawing-canvas").on("touchmove", interactContinue);
-	$(document).on("touchend", interactEnd);
+	// $("#drawing-canvas").on("touchstart", interactStart);
+	// $("#drawing-canvas").on("touchmove", interactContinue);
+	// $(document).on("touchend", interactEnd);
 
 	$("#drawing-submit").on("click", function(e){
 		submit();
