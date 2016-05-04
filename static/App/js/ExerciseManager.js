@@ -51,7 +51,7 @@ var ExerciseManager = function(){
 				$("#character-select").append(option);
 				for (var i in characters){
 					var character = characters[i];
-					var characterDisplayName = character["unicode-display"];
+					var characterDisplayName = String.fromCharCode(character["unicode-value"]);
 					var characterValue = character["unicode-value"];
 					var characterOption = $("<option></option>").text(characterDisplayName).val(characterValue);
 					$("#character-select").append(characterOption);

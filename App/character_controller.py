@@ -15,7 +15,6 @@ def character_response(model):
 		"unicode-value" : model.unicode_value,
 		"unicode-block" : model.unicode_block,
 		"unicode-description" : model.unicode_description,
-		"unicode-display" : model.unicode_display,
 		# "points" : json.loads(model.points),
 	}
 	return response
@@ -43,7 +42,6 @@ def characters(request):
 				character_model = Character(
 					unicode_value=unicode_value,
 					unicode_block=unicode_block,
-					unicode_display=unicode_display,
 					unicode_description=unicode_description)
 				character_model.save()
 				response_data = {
@@ -82,7 +80,6 @@ def character(request, unicode_value):
 				character = Character(
 					unicode_value=unicode_value,
 					unicode_block=unicode_block,
-					unicode_display=unicode_display,
 					unicode_description=unicode_description)
 				character.save()
 			character.points = json.dumps(data["strokes"])

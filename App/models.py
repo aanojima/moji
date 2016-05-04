@@ -15,12 +15,11 @@ class Character(models.Model):
 
 	unicode_value = models.PositiveIntegerField(primary_key=True)
 	unicode_block = models.CharField(max_length=50)
-	unicode_display = models.CharField(max_length=1)
 	unicode_description = models.CharField(max_length=50)
 	points = models.TextField(default="[]")
 
 	def __unicode__(self):
-		return "UNICODE " + str(self.unicode_value) + " - " + self.unicode_block + " - " + self.unicode_description + " - '" + self.unicode_display + "'"
+		return "UNICODE " + str(self.unicode_value) + " - " + self.unicode_block + " - " + self.unicode_description
 
 
 # class Exercise(models.Model):

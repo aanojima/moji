@@ -73,7 +73,6 @@ if (os.environ.has_key('HOME') and os.environ['HOME'] == '/afs/athena.mit.edu/co
             'USER': 'moji',
             'PASSWORD': 'mojidevpw',
             'HOST': 'sql.mit.edu',
-            'OPTIONS': {'charset': 'utf8mb4'},
         }
     }
     MOJI_URL = "/app/"
