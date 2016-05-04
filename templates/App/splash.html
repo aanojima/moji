@@ -4,8 +4,29 @@
 	<script>
 		window.MOJI_URL = "{{MOJI_URL}}";
 	</script>
+
+	<!-- JQUERY -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+
+	<!-- BOOTSTRAP -->
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<!-- Theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+	<link rel="stylesheet" href="{{STATIC_URL}}App/css/splash.css"></link>
 </head>
 <body>
-	<h1>Welcome to Moji!</h1>
+	<div id="main-content" class="text-center">
+		<img src="{{STATIC_URL}}App/img/moji.png" />
+		<h1><b>Welcome to Moji!</b></h1>
+		<p><i>A place where you can learn how to write anything!</i></p>
+		<div>
+			<a href="student"><button class="btn btn-primary">Get Started</button></a>
+			<a href="teacher"><button class="btn btn-primary">Contribute</button></a>
+		</div>
+	</div>
 </body>
 </html>
