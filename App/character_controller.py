@@ -26,7 +26,7 @@ def characters(request):
 		if request.method == "GET":
 			# GET MANY
 			response_data = { "characters" : [] }
-			characters = Character.objects.all()
+			characters = Character.objects.all().order_by("unicode_value")
 			for character in characters:
 				response_data["characters"].append(character_response(character))
 			return HttpResponse(json.dumps(response_data), content_type="application/json")
@@ -119,12 +119,12 @@ def character_blocks(request):
 			unicode_block = request.GET.get('unicode_block')
 			if unicode_block is not None:
 				response_data = { "characters" : [] }
-				characters = Character.objects.filter(unicode_block=unicode_block)
+				characters = Character.objects.filter(unicode_block=unicode_block).order_by('unicode_value')
 				for character in characters:
 					response_data["characters"].append(character_response(character))
 				return HttpResponse(json.dumps(response_data), content_type="application/json")
 			response_data = { "blocks" : {} }
-			characters = Character.objects.all()
+			characters = Character.objects.all().order_by("unicode_value")
 			for character in characters:
 				block = character.unicode_block
 				if response_data["blocks"].has_key(block):
