@@ -594,7 +594,7 @@ def student_submit(request):
 	try:
 		if request.method == "POST":
 			data = json.loads(request.body)
-			character = Character.objects.get(id=data["character"]["character-id"])
+			character = Character.objects.get(unicode_value=data["character"]["unicode-value"])
 			expected_points = json.loads(character.points)
 			submitted_points = data["strokes"]
 			results = evaluate(expected_points, submitted_points)

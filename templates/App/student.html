@@ -17,6 +17,10 @@
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
+	<!-- Select2 -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/css/select2.min.css" rel="stylesheet" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/js/select2.min.js"></script>
+
 	<link rel="stylesheet" href="{{STATIC_URL}}App/css/student.css"/>
 
 	<script type="text/javascript" src="{{STATIC_URL}}App/js/student.js"></script>
@@ -25,28 +29,21 @@
 	<script type="text/javascript" src="{{STATIC_URL}}App/js/DrawingPad.js"></script>
 	<script type="text/javascript" src="{{STATIC_URL}}App/js/FeedbackManager.js"></script>
 	<script type="text/javascript" src="{{STATIC_URL}}App/js/StudentSubmitter.js"></script>
+	<script type="text/javascript" src="{{STATIC_URL}}App/js/ExerciseManager.js"></script>
 </head>
 <body>
 	<div id="main-content" class="text-center">
-		<div id="navigation-bar"><h1>MOJI</h1></div>
+		<div id="navigation-bar"><h1>Moji - Student Page</h1></div>
 		<div id="exercise-information">
-			<h2>Exercise</h2>
-			<div id="character-set">Character Set: <span id="character-set-value">
-				<select id="character-set-select">
-					<option value="HG">Hiragana</option>
-					<option value="KK">Katakana</option>
-				</select>
-			</span></div>
-			<div id="character">Character: <span id="character-value">
-				<select id="character-select">
-					<option name="a" value="1">a</option>
-					<option name="i" value="2">i</option>
-					<option name="u" value="3">u</option>
-					<option name="e" value="4">e</option>
-					<option name="o" value="5">o</option>
-				</select>
-			</span></div>
+			<!-- <div id="character-group"> -->
+				Character: <select id="character-group-select"></select>
+			<!-- </div> -->
+			<!-- <br/> -->
+			<!-- <div id="character"> -->
+				<select id="character-select" disabled="true"></select>
+			<!-- </div> -->
 		</div>
+
 		<br/>
 		<div id="drawing">
 			<div id="drawing-canvas-block">

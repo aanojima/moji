@@ -2,19 +2,13 @@ var StudentSubmitter = function(feedbackManager){
 	var self = {};
 	var data = {
 		"character" : {},
-		"strokes" : [],
-		// "intersections" : {},
-		// "derivatives" : []
+		"strokes" : []
 	};
 
 	var processCharacter = function(){
-		var characterSet = $("#character-set-select").val();
-		var characterID = $("#character-select").val();
-		var characterName = $("#character-select option:selected").attr("name");
+		var unicodeValue = parseInt($("#character-select").val());
 		data["character"] = {
-			"character-set" : characterSet,
-			"character-id" : characterID,
-			"character-name" : characterName
+			"unicode-value" : unicodeValue
 		};
 	}
 
@@ -31,17 +25,11 @@ var StudentSubmitter = function(feedbackManager){
 	}
 
 	self.process = function(character){
-		// TODO
-		// processImage(canvas);
 		processCharacter()
 		processStrokes(character);
-		// processIntersections(character);
-		// processDerivatives(character);
-		// console.log(data);
 	}
 
 	self.submit = function(){
-		// TODO: AJAX
 		$.ajax({
 			method : "POST",
 			url : window.MOJI_URL + "api/exercise/submit",

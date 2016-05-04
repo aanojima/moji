@@ -12,19 +12,15 @@ import App.grader as grader
 
 
 class Character(models.Model):
-	HIRAGANA = "HG"
-	KATAKANA = "KK"
-	JAPANESE_CHARACTERS = (
-		(HIRAGANA, "Hiragana"),
-		(KATAKANA, "Katakana"),
-	)
 
-	character_set = models.CharField(max_length=2, choices=JAPANESE_CHARACTERS, default=HIRAGANA)
-	name = models.CharField(max_length=20)
-	points = models.TextField(blank=True)
+	unicode_value = models.PositiveIntegerField(primary_key=True)
+	unicode_block = models.CharField(max_length=50)
+	unicode_display = models.CharField(max_length=1)
+	unicode_description = models.CharField(max_length=50)
+	points = models.TextField(default="[]")
 
 	def __unicode__(self):
-		return self.character_set + " - " + self.name
+		return "UNICODE " + str(self.unicode_value) + " - " + self.unicode_block + " - " + self.unicode_description + " - '" + self.unicode_display + "'"
 
 
 # class Exercise(models.Model):

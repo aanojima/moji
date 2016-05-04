@@ -3,7 +3,8 @@ import views, character_controller, grade_controller
 
 urlpatterns = patterns('',
 	url(r'^$', views.api),
-	url(r'^characters/(?P<character_id>\d+)', character_controller.character, name='character'),
+	url(r'^characters/blocks/$', character_controller.character_blocks, name="character_blocks"),
+	url(r'^characters/(?P<unicode_value>\d+)', character_controller.character, name='character'),
 	url(r'^characters/$', character_controller.characters, name='characters'),
 	url(r'^exercise/submit$', grade_controller.student_submit, name='student_submit'),
 

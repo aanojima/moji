@@ -3,18 +3,20 @@ from django.http import *
 from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
 from django.conf import settings
-import json, os, time
+import json, os, time, unicodedata
 
 from django.core.exceptions import ObjectDoesNotExist
 
 from App.models import *
+from App.unicode_blocks import *
 
 def character_response(model):
 	response = {
-		"id" : model.id,
-		"name" : model.name,
-		"character_set" : model.character_set,
-		"points" : json.loads(model.points),
+		"unicode-value" : model.unicode_value,
+		"unicode-block" : model.unicode_block,
+		"unicode-description" : model.unicode_description,
+		"unicode-display" : model.unicode_display,
+		# "points" : json.loads(model.points),
 	}
 	return response
 
@@ -30,13 +32,25 @@ def characters(request):
 			return HttpResponse(json.dumps(response_data), content_type="application/json")
 		elif request.method == "POST":
 			# NEW Character
-			character_model = Character(name=request.POST.get("name"), character_set=request.POST.get("character_set"))
-			character_model.save()
-			response_data = {
-				"character" : character_response(character_model),
-				"success" : True
-			}
-			return HttpResponse(json.dumps(response_data), content_type="application/json")
+			unicode_display = request.POST.get("unicode-display")
+			unicode_value = ord(unicode_display) # Opposite of unichr
+			unicode_block = get_block_of(unicode_display)
+			unicode_description = unicodedata.name(unicode_display)
+			try:
+				Character.objects.get(unicode_value=unicode_value)
+				return HttpResponseBadRequest("Unicode character already exists")
+			except ObjectDoesNotExist:
+				character_model = Character(
+					unicode_value=unicode_value,
+					unicode_block=unicode_block,
+					unicode_display=unicode_display,
+					unicode_description=unicode_description)
+				character_model.save()
+				response_data = {
+					"character" : character_response(character_model),
+					"success" : True
+				}
+				return HttpResponse(json.dumps(response_data), content_type="application/json")
 		else:
 			return HttpResponseNotAllowed(['GET', 'POST'])
 	except Exception, e:
@@ -44,12 +58,12 @@ def characters(request):
 		raise
 
 @csrf_exempt
-def character(request, character_id):
+def character(request, unicode_value):
 	try:
 		if request.method == "GET":
 			# GET - READ
 			try:
-				character = Character.objects.get(id=character_id)
+				character = Character.objects.get(unicode_value=unicode_value)
 				response_data = {
 					"character" : character_response(character)
 				}
@@ -57,27 +71,30 @@ def character(request, character_id):
 			except ObjectDoesNotExist:
 				return HttpResponse(status=404)
 		elif request.method == "PUT":
-			# PUT - UPDATE - later
-			data = json.loads(request.body)
+			# PUT - UPDATE
+			data = json.loads(request.body) # Opposite of unichr
+			unicode_display = unichr(int(unicode_value))
+			unicode_block = get_block_of(unicode_display)
+			unicode_description = unicodedata.name(unicode_display)
 			try:
-				character = Character.objects.get(
-					name=data["character"]["character-name"],
-					character_set=data["character"]["character-set"])
+				character = Character.objects.get(unicode_value=unicode_value)
 			except ObjectDoesNotExist:
 				character = Character(
-					name=data["character"]["character-name"],
-					character_set=data["character"]["character-set"])
+					unicode_value=unicode_value,
+					unicode_block=unicode_block,
+					unicode_display=unicode_display,
+					unicode_description=unicode_description)
 				character.save()
 			character.points = json.dumps(data["strokes"])
 			character.save()
 		elif request.method == "DELETE":
-			character = Character.objects.get(id=character_id)
+			character = Character.objects.get(id=unicode_value)
 			character.delete()
 			response_data = { "success" : True }
 			return HttpResponse(json.dumps(response_data), content_type="application/json")
 		else:
 			return HttpResponseNotAllowed(['GET', 'PUT', 'DELETE'])
-		return HttpResponse("API call for character #" + character_id)
+		return HttpResponse("API call for character #" + unicode_value)
 	except ObjectDoesNotExist:
 		return HttpResponse(status=404)
 	except Exception, e:
@@ -85,7 +102,7 @@ def character(request, character_id):
 		raise
 
 	# try:
-	# 	character = Character.objects.get(id=character_id)
+	# 	character = Character.objects.get(id=unicode_value)
 	# 	if character.points == '':
 	# 		# Points not yet defined
 	# 		return 0
@@ -93,3 +110,30 @@ def character(request, character_id):
 	# 	if points is not None:
 	# except ObjectDoesNotExist:
 	# 	return -1
+
+@csrf_exempt
+def character_blocks(request):
+	try:
+		if request.method == "GET":
+			# GET MANY
+			unicode_block = request.GET.get('unicode_block')
+			if unicode_block is not None:
+				response_data = { "characters" : [] }
+				characters = Character.objects.filter(unicode_block=unicode_block)
+				for character in characters:
+					response_data["characters"].append(character_response(character))
+				return HttpResponse(json.dumps(response_data), content_type="application/json")
+			response_data = { "blocks" : {} }
+			characters = Character.objects.all()
+			for character in characters:
+				block = character.unicode_block
+				if response_data["blocks"].has_key(block):
+					response_data["blocks"][block] += 1
+				else:
+					response_data["blocks"][block] = 1
+			return HttpResponse(json.dumps(response_data), content_type="application/json")
+		else:
+			return HttpResponseNotAllowed(['GET'])
+	except Exception, e:
+		# TODO: Error-Handling
+		raise

@@ -2,24 +2,18 @@ var TeacherSubmitter = function(){
 	var self = {};
 	var data = {
 		"character" : {},
-		"strokes" : [],
-		// "intersections" : {},
-		// "derivatives" : []
+		"strokes" : []
 	};
 
 	var processCharacter = function(){
-		var characterSet = $("#character-set-select").val();
-		var characterID = $("#character-select").val();
-		var characterName = $("#character-select option:selected").attr("name");
+		var unicodeValue = $("#character-input").val().charCodeAt(0);
 		data["character"] = {
-			"character-set" : characterSet,
-			"character-id" : characterID,
-			"character-name" : characterName
+			"unicode-value" : unicodeValue
 		};
 	}
 
 	var processStrokes = function(character){
-		data.strokes = character.getStrokes()
+		data["strokes"] = character.getStrokes()
 	}
 
 	var processIntersections = function(character){
@@ -31,26 +25,20 @@ var TeacherSubmitter = function(){
 	}
 
 	self.process = function(character){
-		// TODO
-		// processImage(canvas);
 		processCharacter()
 		processStrokes(character);
-		// processIntersections(character);
-		// processDerivatives(character);
-		// console.log(data);
 	}
 
 	self.submit = function(){
-		// TODO: AJAX
 		$.ajax({
 			method : "PUT",
-			url : window.MOJI_URL + "api/characters/" + data["character"]["character-id"],
+			url : window.MOJI_URL + "api/characters/" + data["character"]["unicode-value"],
 			data : JSON.stringify(data),
 			success : function(result){
 				console.log(result);
 			},
 			error : function(error){
-				console.log(error);
+				console.log(error.responseText);
 			}
 		})
 	}

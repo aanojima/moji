@@ -18,3 +18,11 @@
 #drawing-canvas {
     z-index: 10;
 }
+
+#character-group-select {
+    width : 250px;
+}
+
+#character-select {
+    width : 150px;
+}

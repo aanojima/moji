@@ -18,3 +18,12 @@
 #drawing-canvas {
     z-index: 10;
 }
+
+#character-input-div {
+    width : 1px;
+    margin : auto;
+}
+
+#character-input-div input {
+    width: 60px;
+}

@@ -1,5 +1,6 @@
 $(document).ready(function(){
 	// TODO
+	var exerciseManager = ExerciseManager();
 	var feedbackManager = FeedbackManager();
 	var studentSubmitter = StudentSubmitter(feedbackManager);
 	var drawingPad = DrawingPad(studentSubmitter);
