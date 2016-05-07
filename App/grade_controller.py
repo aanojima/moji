@@ -124,14 +124,14 @@ def evaluate(expected_points, submitted_points):
 
 	# GRADING POLICY
 	#
-	# Character Grade: 10%
+	# Character Grade: 30%
 	# - Stroke Count: 50% (all or nothing) DONE
 	# - Dimension Ratio: 50% DONE
 	# - Number of Cross Intersections: 10% DONE
 	# - Relative Location of Cross Intersections: 10% (wrt two stroke ranges -> TODO)
 	#
 	#
-	# Strokes Grade: 90% (Following Grades per Stroke)
+	# Strokes Grade: 70% (Following Grades per Stroke)
 	# - Dimensions: 10% (DONE)
 	# - Number of Self Intersections: 10%% (TODO)
 	# - Relative Location of Self Intersections: 10% (wrt stroke range) (TODO)

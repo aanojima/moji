@@ -11,16 +11,44 @@ var DrawingPad = function(submitter){
 	var debugToggle = false;
 
 	function interactStart(e){
-		var x = e.offsetX / 2;
-		var y = e.offsetY / 2;
+		var x, y;
+		if (e.type == 'touchstart'){
+			var originalEvent = e.originalEvent;
+			var touches = originalEvent.targetTouches;
+			if (touches.length == 1){
+				x = (touches[0].pageX - e.target.offsetLeft) / 2;
+				y = (touches[0].pageY - e.target.offsetTop) / 2;
+			}
+			else {
+				return;
+			}
+		}
+		else {
+			x = e.offsetX / 2;
+			y = e.offsetY / 2;
+		}
 		beginStroke(x,y);
 		beginDraw(x,y);
 	}
 
 	function interactContinue(e){
 		if (_isDrawing){
-			var x = e.offsetX / 2;
-			var y = e.offsetY / 2;
+			var x, y;
+			if (e.type == 'touchmove'){
+				var originalEvent = e.originalEvent;
+				var touches = originalEvent.targetTouches;
+				if (touches.length == 1){
+					x = (touches[0].pageX - e.target.offsetLeft) / 2;
+					y = (touches[0].pageY - e.target.offsetTop) / 2;
+				}
+				else {
+					return;
+				}
+			}
+			else {
+				x = e.offsetX / 2;
+				y = e.offsetY / 2;
+			}
 			stroke(x,y);
 			draw(x,y);
 		}
@@ -29,15 +57,29 @@ var DrawingPad = function(submitter){
 	function interactEnd(e){
 		if (_isDrawing){
 			// STROKE COMPLETED
-			var x = e.offsetX / 2;
-			var y = e.offsetY / 2;
+			var x, y;
+			if (e.type == 'touchend'){
+				var originalEvent = e.originalEvent;
+				var touches = originalEvent.targetTouches;
+				if (touches.length == 1){
+					x = (touches[0].pageX - e.target.offsetLeft) / 2;
+					y = (touches[0].pageY - e.target.offsetTop) / 2;
+				}
+				else {
+					return;
+				}
+			}
+			else {
+				x = e.offsetX / 2;
+				y = e.offsetY / 2;
+			}
 			endStroke(x,y);
 			endDraw(x,y);
 		}
 		_isDrawing = false;
 	}
 
-	$("#drawing-canvas").bind("mousedown touchstart", interactStart);
+	$("#drawing-canvas").on("mousedown touchstart", interactStart);
 	$("#drawing-canvas").on("mousemove touchmove", interactContinue);
 	$(document).on("mouseup touchend", interactEnd);
 
