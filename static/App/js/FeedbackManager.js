@@ -6,7 +6,6 @@ var FeedbackManager = function(){
 	}
 
 	self.displayFeedback = function(results){
-		console.log(results);
 		// RESET
 		$(".feedback").text("");
 		$(".feedback-list").html("");

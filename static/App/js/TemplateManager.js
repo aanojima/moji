@@ -1,7 +1,7 @@
 var TemplateManager = function(drawingPad){
 	var self = {};
 
-	// TODO
+	// TODO: Add File Upload
 	$("#set-template-button").on("click", function(e){
 		var URL = $("#template-url").val();
 		drawingPad.setBackgroundImage(URL);

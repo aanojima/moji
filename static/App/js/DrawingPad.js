@@ -199,7 +199,6 @@ var DrawingPad = function(submitter){
 	}
 
 	self.showCOG = function(){
-		// TODO
 		var COG = _character.calculateCOG();
 		var x = COG[0];
 		var y = COG[1];
@@ -208,7 +207,6 @@ var DrawingPad = function(submitter){
 	}
 
 	self.showStrokeCOGs = function(){
-		// TODO
 		var COGs = _character.calculateStrokeCOGs();
 		for (var i in COGs){
 			var COG = COGs[i];
@@ -238,11 +236,7 @@ var DrawingPad = function(submitter){
 		}
 		
 		var lineSegments = _character.sortLineSegments();
-		// console.log(lineSegments);
-
 		var intersections = _character.calculateIntersections();
-		// console.log(intersections);
-
 		var singleStrokeIntersections = [];
 		for (var i in intersections["single"]){
 			var intersection = intersections["single"][i];
@@ -263,7 +257,6 @@ var DrawingPad = function(submitter){
 		var range = _character.calculateRange();
 		boxRectangle(range, "brown");
 		var strokeRanges = _character.calculateStrokeRanges();
-		// console.log(range, strokeRanges);
 		for (var i in strokeRanges){
 			boxRectangle(strokeRanges[i], "brown");
 		}
