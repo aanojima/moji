@@ -8,7 +8,7 @@ var DrawingPad = function(submitter){
 	window.character = _character;
 	var _lastStrokeData = [];
 
-	var debugToggle = false;
+	var inDebugMode = false;
 
 	function interactStart(e){
 		var x, y;
@@ -83,20 +83,21 @@ var DrawingPad = function(submitter){
 	});
 
 	$("#drawing-debug").on("click", function(e){
-		debugToggle = !debugToggle;
-		if (debugToggle){
-			self.debug();
-			$(this).text("Reset");
-		}
-		else {
-			resetDraw();
-			$(this).text("Debug");
-		}
+		toggleDebug();
 	});
 
 	$("#drawing-canvas").on("mousedown touchstart", interactStart);
 	$("#drawing-canvas").on("mousemove touchmove", interactContinue);
 	$(document).on("mouseup touchend", interactEnd);
+
+	function toggleDebug(){
+		if (!inDebugMode){
+			self.debug();
+		}
+		else {
+			resetDraw();
+		}
+	}
 
 	function beginDraw(x,y){
 		_context.beginPath();
@@ -164,6 +165,7 @@ var DrawingPad = function(submitter){
 	}
 
 	function resetDraw(){
+		inDebugMode = false;
 		clear();
 		var strokes = _character.getStrokes();
 		for (var i in strokes){
@@ -183,10 +185,13 @@ var DrawingPad = function(submitter){
 				}
 			}
 		}
+		$("#drawing-debug").text("Debug");
 	}
 
 	function clear(){
+		inDebugMode = false;
 		_context.clearRect(0,0,275,275);
+		$("#drawing-debug").text("Debug");
 	}
 
 	function next(){
@@ -215,6 +220,7 @@ var DrawingPad = function(submitter){
 	}
 
 	self.debug = function(){
+		inDebugMode = true;
 		_character.debug();
 		
 		var derivatives = _character.calculateDerivatives();
@@ -261,6 +267,8 @@ var DrawingPad = function(submitter){
 		for (var i in strokeRanges){
 			boxRectangle(strokeRanges[i], "brown");
 		}
+
+		$("#drawing-debug").text("Reset");
 
 	}
 
