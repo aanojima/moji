@@ -57,24 +57,8 @@ var DrawingPad = function(submitter){
 	function interactEnd(e){
 		if (_isDrawing){
 			// STROKE COMPLETED
-			var x, y;
-			if (e.type == 'touchend'){
-				var originalEvent = e.originalEvent;
-				var touches = originalEvent.targetTouches;
-				if (touches.length == 1){
-					x = (touches[0].pageX - e.target.offsetLeft) / 2;
-					y = (touches[0].pageY - e.target.offsetTop) / 2;
-				}
-				else {
-					return;
-				}
-			}
-			else {
-				x = e.offsetX / 2;
-				y = e.offsetY / 2;
-			}
-			endStroke(x,y);
-			endDraw(x,y);
+			endStroke();
+			endDraw();
 		}
 		_isDrawing = false;
 	}
@@ -158,11 +142,11 @@ var DrawingPad = function(submitter){
 		_lastStrokeData.push([x,y]);
 	}
 
-	function endDraw(x,y){
+	function endDraw(){
 		// draw(x,y);
 	}
 
-	function endStroke(x,y){
+	function endStroke(){
 		// TODO
 		_character.addNewStroke(_lastStrokeData);
 		_lastStrokeData = [];
@@ -190,7 +174,7 @@ var DrawingPad = function(submitter){
 					beginDraw(x,y);
 				}
 				else if (j == strokes.length - 1){
-					endDraw(x,y);
+					endDraw();
 				}
 				else {
 					draw(x,y);
