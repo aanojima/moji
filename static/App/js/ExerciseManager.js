@@ -32,7 +32,7 @@ var ExerciseManager = function(){
 
 	$("#character-group-select").on("change", function(e){
 		// Enable Character Select
-		$("#character-select").prop("disabled", false);
+		$("#character-select").prop("disabled", true);
 
 		// Clear All Options from Character Select
 		$("#character-select option").remove();
@@ -59,6 +59,7 @@ var ExerciseManager = function(){
 				$("#character-select").select2({
 					placeholder: "Select a character"
 				});
+				$("#character-select").prop("disabled", false);
 			},
 			error : function(error){
 				console.log(error.responseText);
