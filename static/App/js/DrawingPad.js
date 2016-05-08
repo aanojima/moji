@@ -11,6 +11,7 @@ var DrawingPad = function(submitter){
 	var debugToggle = false;
 
 	function interactStart(e){
+		e.preventDefault();
 		var x, y;
 		if (e.type == 'touchstart'){
 			var originalEvent = e.originalEvent;
@@ -32,6 +33,7 @@ var DrawingPad = function(submitter){
 	}
 
 	function interactContinue(e){
+		e.preventDefault();
 		if (_isDrawing){
 			var x, y;
 			if (e.type == 'touchmove'){
@@ -55,6 +57,7 @@ var DrawingPad = function(submitter){
 	}
 
 	function interactEnd(e){
+		e.preventDefault();
 		if (_isDrawing){
 			// STROKE COMPLETED
 			endStroke();
