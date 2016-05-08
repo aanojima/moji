@@ -11,7 +11,6 @@ var DrawingPad = function(submitter){
 	var debugToggle = false;
 
 	function interactStart(e){
-		e.preventDefault();
 		var x, y;
 		if (e.type == 'touchstart'){
 			var originalEvent = e.originalEvent;
@@ -57,7 +56,6 @@ var DrawingPad = function(submitter){
 	}
 
 	function interactEnd(e){
-		e.preventDefault();
 		if (_isDrawing){
 			// STROKE COMPLETED
 			endStroke();
@@ -65,10 +63,6 @@ var DrawingPad = function(submitter){
 		}
 		_isDrawing = false;
 	}
-
-	$("#drawing-canvas").on("mousedown touchstart", interactStart);
-	$("#drawing-canvas").on("mousemove touchmove", interactContinue);
-	$(document).on("mouseup touchend", interactEnd);
 
 	// $("#drawing-canvas").on("touchstart", interactStart);
 	// $("#drawing-canvas").on("touchmove", interactContinue);
@@ -99,6 +93,10 @@ var DrawingPad = function(submitter){
 			$(this).text("Debug");
 		}
 	});
+
+	$("#drawing-canvas").on("mousedown touchstart", interactStart);
+	$("#drawing-canvas").on("mousemove touchmove", interactContinue);
+	$(document).on("mouseup touchend", interactEnd);
 
 	function beginDraw(x,y){
 		_context.beginPath();
@@ -150,8 +148,9 @@ var DrawingPad = function(submitter){
 	}
 
 	function endStroke(){
-		// TODO
-		_character.addNewStroke(_lastStrokeData);
+		if (_lastStrokeData.length > 1){
+			_character.addNewStroke(_lastStrokeData);	
+		}
 		_lastStrokeData = [];
 	}
 
