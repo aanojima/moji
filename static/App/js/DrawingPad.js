@@ -192,6 +192,9 @@ var DrawingPad = function(submitter){
 		inDebugMode = false;
 		_context.clearRect(0,0,275,275);
 		$("#drawing-debug").text("Debug");
+		var feedbackCanvas = $("#feedback-canvas")[0];
+		var context = feedbackCanvas.getContext("2d");
+		context.clearRect(0, 0, feedbackCanvas.width, feedbackCanvas.height)
 	}
 
 	function next(){
@@ -321,7 +324,11 @@ var DrawingPad = function(submitter){
 		context.clearRect(0, 0, feedbackCanvas.width, feedbackCanvas.height)
 		var imageObj = new Image();
 		imageObj.onload = function(){
-			context.drawImage(this, 0, 0, feedbackCanvas.width, feedbackCanvas.height);
+			console.log(imageObj);
+			window.testa = imageObj;
+			context.globalAlpha = 0.5;
+			context.drawImage(this, 0, 0, feedbackCanvas.width - 2, feedbackCanvas.height - 2);
+			context.globalAlpha = 1.0;
 		};
 
 		imageObj.src = imageURL;
