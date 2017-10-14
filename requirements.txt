@@ -1,0 +1,6 @@
+Django==1.6
+Pillow==4.3.0
+argparse==1.2.1
+fonttools==3.16.0
+olefile==0.44
+wsgiref==0.1.2
