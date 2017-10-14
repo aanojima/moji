@@ -65,14 +65,18 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 if (os.environ.has_key('HOME') and os.environ['HOME'] == '/afs/athena.mit.edu/course/urop/moji'):
     # MIT Athena Locker - Production
+    f = open(os.environ['HOME'] + '/.sql/my.cnf', 'r')
+    contents = f.read()
+    cnfData = [line.split('=') for line in contents.split()[1:]]
+    f.close()
     PRODUCTION = True
     DATABASES = {
         'default' : {
             'ENGINE': 'django.db.backends.mysql',
             'NAME': 'moji+app',
-            'USER': 'moji',
-            'PASSWORD': 'mojidevpw',
-            'HOST': 'sql.mit.edu',
+            'USER': cnfData[1][1],
+            'PASSWORD': cnfData[2][1].replace('"', ''),
+            'HOST': cnfData[0][1],
         }
     }
     MOJI_URL = "/app/"
