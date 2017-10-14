@@ -8,7 +8,7 @@ import json, os, time, unicodedata
 from django.core.exceptions import ObjectDoesNotExist
 
 from App.models import *
-from App.unicode_blocks import *
+from App.unicode import *
 
 def character_response(model):
 	response = {
@@ -129,6 +129,30 @@ def character_blocks(request):
 				else:
 					response_data["blocks"][block] = 1
 			return HttpResponse(json.dumps(response_data), content_type="application/json")
+		else:
+			return HttpResponseNotAllowed(['GET'])
+	except Exception, e:
+		# TODO: Error-Handling
+		raise
+
+@csrf_exempt
+def character_images(request, unicode_value):
+	try:
+		if request.method == "GET":
+			# GET MANY
+			# unicode_value = request.GET.get('code')
+			if unicode_value:
+				response = HttpResponse(mimetype="image/png")
+				unicode_value = int(unicode_value)
+				try:
+					unicode_value = unichr(unicode_value)
+				except ValueError, e:
+					return HttpResponse(status=400)
+				image = unicode_to_image(unicode_value)
+				image.save(response, "PNG")
+				return response
+			else:
+				return HttpResponse(status=400)
 		else:
 			return HttpResponseNotAllowed(['GET'])
 	except Exception, e:
